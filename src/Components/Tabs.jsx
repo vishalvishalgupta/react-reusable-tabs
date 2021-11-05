@@ -1,25 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
+import Tab from "./Tab";
 
-function Tab({ activeTab, label, onClick }) {
+function Tabs(props) {
+    debugger
+    const [activeTab, setActiveTab] = useState(props.children[0].props.label)
 
-    let className = 'tab-list-item';
-
-    if (activeTab === label) {
-        className += ' tab-list-active';
-    }
-
-    function onClickTab() {
-        onClick(label)
+    function onClickTabItem(tab) {
+        setActiveTab(tab)
     }
 
     return (
-        <li
-            className={className}
-            onClick={onClickTab}
-        >
-            {label}
-        </li>
-    );
+        <div className="tabs">
+            <ol className="tab-list">
+                {props.children.map((child) => {
+                    const { label } = child.props;
+
+                    return (
+                        <Tab
+                            activeTab={activeTab}
+                            key={label}
+                            label={label}
+                            onClick={onClickTabItem}
+                        />
+                    );
+                })}
+            </ol>
+            <div className="tab-content">
+                {props.children.map((child) => {
+                    if (child.props.label !== activeTab) return undefined;
+                    return child.props.children;
+                })}
+            </div>
+        </div>
+    )
 }
 
-export default Tab;
+export default Tabs;
